@@ -1,89 +1,82 @@
-# Python Number Games and Utilities
+# Debugging-Python-Quantic
 
-This repository contains two simple Python scripts:
+This repository is part of Quantic's **Managing AI Engineering** section in the **AI-Assisted Software Development** course, specifically the **Debugging** module.
 
-- `guess_numberss.py` — a number guessing game.
-- `sort_numbers.py` — reads numbers from a text file, sorts them, and writes the results to a new file.
+## Overview
 
-## Requirements
+This repo documents the Python debugging and troubleshooting work completed during the module before the repository was created. The exercises focused on using AI assistance to identify errors, simplify code, fix environment issues, and complete small automation tasks in Ubuntu.
 
-- Python 3 installed
-- A terminal such as Ubuntu Terminal, PowerShell, or Command Prompt
+## Topics Covered
 
-Check your Python version with:
+- Python script debugging and cleanup
+- Fixing `ModuleNotFoundError` issues
+- Working with Python virtual environments (`venv`)
+- Resolving Ubuntu `externally managed environment` package installation errors
+- Reading files from the correct local directory
+- Generating and opening HTML output files
+- Basic Git workflows for resetting, restoring, committing, and pushing code
+- Building simple automation scripts with Python
+- Merging Excel spreadsheets with user-selected columns
 
-```bash
-python3 --version
-```
+## Work Completed
 
-## Files
+### 1. Website hits mapping script
+A Python script was created to:
+- Read `website_hits.txt`
+- Parse city and website hit values
+- Geocode city names
+- Generate an interactive HTML map with markers
+- Display the hit count when a marker is clicked
 
-- `guess_numberss.py`
-- `sort_numbers.py`
-- `numbers.txt` (used for testing `sort_numbers.py`)
-- `processed_numbers.txt` (created after running `sort_numbers.py`)
+The script was later simplified to better match assignment requirements and adjusted to use files stored in the same directory as the script.
 
-## How to Run
+### 2. Environment and dependency troubleshooting
+Several setup and execution problems were resolved, including:
+- `ModuleNotFoundError` for missing packages
+- Installing dependencies inside a virtual environment instead of system Python
+- Fixing the `externally managed environment` error in Ubuntu
+- Correcting a misspelled package name: `openpyx1` -> `openpyxl`
 
-### Run the guessing game
+### 3. File path debugging
+The exercises included debugging file location issues such as:
+- `FileNotFoundError` when a text file was not found in the expected path
+- Updating the script to read files from the same folder as the Python file
+- Verifying generated HTML output paths and opening them in Ubuntu
 
-```bash
-python3 guess_numberss.py
-```
+### 4. Spreadsheet merge script
+A second Python script was created to:
+- Ask for the names of two Excel files
+- Display the column headers from each file
+- Ask the user which columns to merge on
+- Save a new merged spreadsheet
 
-This script starts a number guessing game in the terminal.
+This exercise also included debugging incorrect user input, such as entering column numbers instead of column names.
 
-### Run the sorting script
+### 5. Git and version control practice
+The workflow also included:
+- Resetting local changes to match GitHub
+- Understanding `HEAD is now at ...` after a hard reset
+- Staging, committing, and pushing updated files to GitHub
 
-```bash
-python3 sort_numbers.py
-```
+## Tools and Technologies
 
-This script looks for `.txt` files in the current directory, reads numeric values from them, ignores non-numeric lines, sorts the numbers, and writes the sorted values and total sum to a new processed file.
+- Python 3
+- Ubuntu
+- `venv`
+- pandas
+- openpyxl
+- folium
+- geopy
+- Git and GitHub
 
-## Testing `sort_numbers.py`
+## Key Takeaways
 
-Create a file named `numbers.txt` in the same directory as `sort_numbers.py`.
+- Keep scripts simple when the assignment only requires core functionality.
+- Use a virtual environment on Ubuntu to avoid system package conflicts.
+- Always verify exact filenames and paths when debugging file access issues.
+- When prompting users for merge columns, be clear whether the input should be a column name or column number.
+- Commit working versions often so it is easy to recover from mistakes.
 
-Example `numbers.txt`:
+## Repository Purpose
 
-```text
-10
-4
-7.5
-2
-apple
-12
-```
-
-Then run:
-
-```bash
-python3 sort_numbers.py
-```
-
-Expected behavior:
-
-- The script reads `numbers.txt`
-- Ignores non-numeric lines such as `apple`
-- Sorts the numeric values
-- Creates a file named `processed_numbers.txt`
-
-## Example output file
-
-After running `sort_numbers.py`, the generated `processed_numbers.txt` file should look similar to this:
-
-```text
-Sorted Numbers:
-2.0
-4.0
-7.5
-10.0
-12.0
-Sum of Numbers:
-35.5
-```
-
-## Notes
-
-- Make sure you run the scripts from the directory where the files are located.
+This repository serves as a record of the debugging exercises, fixes, and Python scripts developed during the module. It highlights practical debugging patterns and AI-assisted problem solving in a local Ubuntu development environment.
