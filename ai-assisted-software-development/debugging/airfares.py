@@ -1,32 +1,48 @@
 import itertools
 
-# Define the graph as a dictionary where keys are cities and values are lists of (destination, airfare) tuples.
 graph = {}
 
-# Read the airfare data from a file and populate the graph.
 with open('airfares.txt', 'r') as file:
     for line in file:
-        origin, destination, airfare = map(str.strip, line.split(' | '))  # Strip leading/trailing spaces
+        parts = [part.strip() for part in line.strip().split('|')]
+
+        if len(parts) != 3:
+            print(f"Skipping bad line: {line}")
+            continue
+
+        origin, destination, airfare = parts
         airfare = float(airfare)
+
+        origin = origin.lower()
+        destination = destination.lower()
 
         if origin not in graph:
             graph[origin] = []
         graph[origin].append((destination, airfare))
 
-# Function to calculate the total cost of a path.
 def calculate_path_cost(path):
     total_cost = 0.0
     for i in range(len(path) - 1):
         origin, destination = path[i], path[i + 1]
-        for dest, cost in graph[origin]:
+        found = False
+
+        for dest, cost in graph.get(origin, []):
             if dest == destination:
                 total_cost += cost
+                found = True
                 break
+
+        if not found:
+            return float('inf')
+
     return total_cost
 
-# Function to find the optimal tour using itertools.permutations.
 def find_optimal_tour(start_city):
     all_cities = list(graph.keys())
+
+    if start_city not in all_cities:
+        return None, None
+
     all_cities.remove(start_city)
     optimal_tour = None
     min_cost = float('inf')
@@ -41,16 +57,21 @@ def find_optimal_tour(start_city):
 
     return optimal_tour, min_cost
 
-# Get user input for the starting city.
-start_city = input("Enter the city you're starting in: ")
+print("Available starting cities:")
+for city in sorted(graph.keys()):
+    print(city.title())
+
+start_city = input("Enter the city you're starting in: ").strip().lower()
 
 if start_city in graph:
     optimal_tour, total_cost = find_optimal_tour(start_city)
 
-    # Print the optimal tour and total cost.
-    print("Optimal Tour:")
-    for city in optimal_tour:
-        print(f"City: {city}")
-    print(f"Total Cost: ${total_cost:.2f}")
+    if optimal_tour is None or total_cost == float('inf'):
+        print("No complete tour found.")
+    else:
+        print("Optimal Tour:")
+        for city in optimal_tour:
+            print(f"City: {city.title()}")
+        print(f"Total Cost: ${total_cost:.2f}")
 else:
     print("City not found in the data.")
