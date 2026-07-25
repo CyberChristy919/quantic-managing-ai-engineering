@@ -1,59 +1,77 @@
-import wikipediaapi
+import itertools
 
-# Create a Wikipedia API object with user-agent and language
-wiki_wiki = wikipediaapi.Wikipedia(user_agent="FindSections/1.0", language="en")
+graph = {}
 
-# Function to check if a section title contains specific keywords
-def contains_keywords(section_title, keywords):
-    section_title = section_title.lower()
-    for keyword in keywords:
-        if keyword in section_title:
-            return True
-    return False
+with open('airfares.txt', 'r') as file:
+    for line in file:
+        parts = [part.strip() for part in line.strip().split('|')]
 
-# Function to extract text from a section and its subsections
-def extract_section_text(section):
-    section_text = section.text
-    for subsect in section.sections:
-        section_text += extract_section_text(subsect)
-    return section_text
+        if len(parts) != 3:
+            print(f"Skipping bad line: {line}")
+            continue
 
-# Function to check if a section or its subsections contains specific keywords
-def has_keywords_section(section, keywords):
-    if contains_keywords(section.title, keywords):
-        return True, extract_section_text(section)
-    
-    for subsect in section.sections:
-        has_keywords, subsect_text = has_keywords_section(subsect, keywords)
-        if has_keywords:
-            return True, subsect_text
-    
-    return False, None
+        origin, destination, airfare = parts
+        airfare = float(airfare)
 
-# Main function
-def main():
-    # Define the keywords to look for in section titles
-    keywords = ["advertising", "marketing"]
+        origin = origin.lower()
+        destination = destination.lower()
 
-    # Create or open the strategies.txt file for writing
-    with open("strategies.txt", "w", encoding="utf-8") as strategies_file:
-        # Open the coffees.txt file for reading
-        with open("coffees.txt", "r", encoding="utf-8") as coffees_file:
-            # Iterate through each brand name in coffees.txt
-            for brand_name in coffees_file:
-                brand_name = brand_name.strip()  # Remove leading/trailing whitespace
+        if origin not in graph:
+            graph[origin] = []
+        graph[origin].append((destination, airfare))
 
-                # Retrieve the Wikipedia page for the brand
-                page = wiki_wiki.page(brand_name)
+def calculate_path_cost(path):
+    total_cost = 0.0
+    for i in range(len(path) - 1):
+        origin, destination = path[i], path[i + 1]
+        found = False
 
-                # Check if the page or its subsections have sections with the keywords
-                has_keywords, section_text = has_keywords_section(page, keywords)
+        for dest, cost in graph.get(origin, []):
+            if dest == destination:
+                total_cost += cost
+                found = True
+                break
 
-                if has_keywords:
-                    # Write the brand name, section title, and section text to strategies.txt
-                    strategies_file.write(f"Brand Name: {brand_name}\n")
-                    strategies_file.write(f"Section Title: {keywords}\n")
-                    strategies_file.write(f"Section Text:\n{section_text}\n\n")
+        if not found:
+            return float('inf')
 
-if __name__ == "__main__":
-    main()
+    return total_cost
+
+def find_optimal_tour(start_city):
+    all_cities = list(graph.keys())
+
+    if start_city not in all_cities:
+        return None, None
+
+    all_cities.remove(start_city)
+    optimal_tour = None
+    min_cost = float('inf')
+
+    for permuted_cities in itertools.permutations(all_cities):
+        tour = [start_city] + list(permuted_cities) + [start_city]
+        tour_cost = calculate_path_cost(tour)
+
+        if tour_cost < min_cost:
+            min_cost = tour_cost
+            optimal_tour = tour
+
+    return optimal_tour, min_cost
+
+print("Available starting cities:")
+for city in sorted(graph.keys()):
+    print(city.title())
+
+start_city = input("Enter the full starting city name exactly as shown: ").strip().lower()
+
+if start_city in graph:
+    optimal_tour, total_cost = find_optimal_tour(start_city)
+
+    if optimal_tour is None or total_cost == float('inf'):
+        print("No complete tour found.")
+    else:
+        print("Optimal Tour:")
+        for city in optimal_tour:
+            print(f"City: {city.title()}")
+        print(f"Total Cost: ${total_cost:.2f}")
+else:
+    print("City not found in the data.")
