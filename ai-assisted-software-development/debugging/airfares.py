@@ -61,7 +61,7 @@ print("Available starting cities:")
 for city in sorted(graph.keys()):
     print(city.title())
 
-start_city = input("Enter the city you're starting in: ").strip().lower()
+start_city = input("Enter the full starting city name exactly as shown: ").strip().lower()
 
 if start_city in graph:
     optimal_tour, total_cost = find_optimal_tour(start_city)
