@@ -1,13 +1,12 @@
-# Build the graph from the airfare file
+# Define the graph as a dictionary where keys are cities and values are lists of (destination, airfare) tuples.
 graph = {}
 
-with open("airfares.txt", "r") as file:
+# Read the airfare data from a file and populate the graph.
+with open('airfares.txt', 'r') as file:
     for line in file:
-        origin, destination, airfare = [part.strip() for part in line.strip().split("|")]
-        origin = origin.lower()
-        destination = destination.lower()
+        origin, destination, airfare = map(str.strip, line.split(' | '))  # Strip leading/trailing spaces
         airfare = float(airfare)
-
+        
         if origin not in graph:
             graph[origin] = []
         graph[origin].append((destination, airfare))
