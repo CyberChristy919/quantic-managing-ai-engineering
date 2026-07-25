@@ -11,25 +11,27 @@ with open('airfares.txt', 'r') as file:
             graph[origin] = []
         graph[origin].append((destination, airfare))
 
-# Function to find a path recursively
+# Function to find the optimal tour using TSP with memoization.
 def tsp_dp(city, visited_cities):
-    if city not in graph:
+    if not visited_cities:
         return [(city, 0)]
 
-    min_cost = float("inf")
-    min_path = [(city, 0)]
+    # Calculate the minimum cost and sequence of cities.
+    min_cost = float('inf')
+    min_path = None
 
     for neighbor, cost in graph[city]:
         if neighbor not in visited_cities:
             new_visited = visited_cities.copy()
             new_visited.add(neighbor)
-
             path = tsp_dp(neighbor, new_visited)
-            total_cost = cost + sum(step_cost for _, step_cost in path)
+            
+            if path is not None:  # Check for None here
+                total_cost = cost + path[0][1]
 
-            if total_cost < min_cost:
-                min_cost = total_cost
-                min_path = [(city, cost)] + path
+                if total_cost < min_cost:
+                    min_cost = total_cost
+                    min_path = [(city, cost)] + path
 
     return min_path
 
