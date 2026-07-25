@@ -1,28 +1,34 @@
-import os
-import requests
-from bs4 import BeautifulSoup
+import wikipediaapi
 
-# Function to retrieve Wikipedia page content
-def get_wikipedia_page(brand_name):
-    # Construct the URL for the Wikipedia page
-    url = f"https://en.wikipedia.org/wiki/{brand_name}"
+# Create a Wikipedia API object with user-agent and language
+wiki_wiki = wikipediaapi.Wikipedia(user_agent="FindSections/1.0", language="en")
 
-    # Send an HTTP GET request to the URL
-    response = requests.get(url, headers={"User-Agent": "WikipediaHTMLExample/1.0 (https://example.com)"})
-
-    # Check if the request was successful (status code 200)
-    if response.status_code == 200:
-        return response.text
-    else:
-        return None
-
-# Function to check if a section title contains specific words
+# Function to check if a section title contains specific keywords
 def contains_keywords(section_title, keywords):
     section_title = section_title.lower()
     for keyword in keywords:
         if keyword in section_title:
             return True
     return False
+
+# Function to extract text from a section and its subsections
+def extract_section_text(section):
+    section_text = section.text
+    for subsect in section.sections:
+        section_text += extract_section_text(subsect)
+    return section_text
+
+# Function to check if a section or its subsections contains specific keywords
+def has_keywords_section(section, keywords):
+    if contains_keywords(section.title, keywords):
+        return True, extract_section_text(section)
+    
+    for subsect in section.sections:
+        has_keywords, subsect_text = has_keywords_section(subsect, keywords)
+        if has_keywords:
+            return True, subsect_text
+    
+    return False, None
 
 # Main function
 def main():
@@ -37,24 +43,17 @@ def main():
             for brand_name in coffees_file:
                 brand_name = brand_name.strip()  # Remove leading/trailing whitespace
 
-                # Retrieve the Wikipedia page content
-                page_content = get_wikipedia_page(brand_name)
+                # Retrieve the Wikipedia page for the brand
+                page = wiki_wiki.page(brand_name)
 
-                if page_content:
-                    # Parse the HTML content using BeautifulSoup
-                    soup = BeautifulSoup(page_content, "html.parser")
+                # Check if the page or its subsections have sections with the keywords
+                has_keywords, section_text = has_keywords_section(page, keywords)
 
-                    # Find all section titles (usually enclosed in <span> tags with class "mw-headline")
-                    section_titles = soup.find_all("h2")
-
-                    # Iterate through section titles and check for keywords
-                    for title in section_titles:
-                        section_title = title.text
-                        if contains_keywords(section_title, keywords):
-                            # Write the brand name and section text to strategies.txt
-                            strategies_file.write(f"Brand Name: {brand_name}\n")
-                            strategies_file.write(f"Section Title: {section_title}\n")
-                            strategies_file.write(f"Section Text: {title.parent.text}\n\n")
+                if has_keywords:
+                    # Write the brand name, section title, and section text to strategies.txt
+                    strategies_file.write(f"Brand Name: {brand_name}\n")
+                    strategies_file.write(f"Section Title: {keywords}\n")
+                    strategies_file.write(f"Section Text:\n{section_text}\n\n")
 
 if __name__ == "__main__":
     main()
