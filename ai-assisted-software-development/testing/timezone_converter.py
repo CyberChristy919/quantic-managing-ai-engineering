@@ -1,5 +1,6 @@
 import pytz
 from datetime import datetime
+from pytz.exceptions import UnknownTimeZoneError
 
 def convert_timezone(input_time, from_timezone, to_timezone):
     try:
