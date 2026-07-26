@@ -1,10 +1,10 @@
 # Debugging Section
 
-This section contains Python debugging exercises focused on reading tracebacks, fixing broken imports, restoring overwritten files, and verifying that programs run correctly. A strong README should explain what the project does, how to install dependencies, and how to run it with copy-paste-ready commands.[1][2][3]
+This section contains Python debugging exercises focused on reading tracebacks, fixing broken imports, restoring overwritten files, and verifying that programs run correctly. A strong README should explain what the project does, how to install dependencies, and how to run it with copy-paste-ready commands
 
 ## Purpose
 
-The goal of this section is to practice finding and fixing common coding problems in small Python programs. Debugging in Python centers on identifying bugs, reading error messages, and correcting the underlying cause rather than just silencing the symptom.[4]
+The goal of this section is to practice finding and fixing common coding problems in small Python programs. Debugging in Python centers on identifying bugs, reading error messages, and correcting the underlying cause rather than just silencing the symptom.
 
 ## Prerequisites
 
@@ -12,7 +12,7 @@ The goal of this section is to practice finding and fixing common coding problem
 - A virtual environment for isolated package management.
 - The project files for the `debugging` folder, including any `.py` scripts and data files such as `airfares.txt`.
 
-README guidance recommends stating required runtime versions and keeping setup instructions short and scannable.[1][2]
+README guidance recommends stating required runtime versions and keeping setup instructions short and scannable.
 
 ## Setup
 
@@ -44,7 +44,7 @@ Or run the airfare optimizer with:
 python3 airfares.py
 ```
 
-Good READMEs use fenced code blocks for commands and keep examples easy to copy and paste.[1][3]
+Good READMEs use fenced code blocks for commands and keep examples easy to copy and paste.
 
 ## Debugging Workflow
 
@@ -54,7 +54,7 @@ Good READMEs use fenced code blocks for commands and keep examples easy to copy 
 4. Run the script again after each change.
 5. Confirm that the program now produces the expected output or updates the correct file.
 
-This matches standard debugging practice: use the error message to locate the failure, then test again after each fix.[4]
+This matches standard debugging practice: use the error message to locate the failure, then test again after each fix.
 
 ## Common Issues
 
